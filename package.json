@@ -14,7 +14,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite": "^4.5.0"
+    "vite": "^5.4.21"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",

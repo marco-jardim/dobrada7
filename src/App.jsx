@@ -324,10 +324,6 @@ function App() {
               <li>Cut the outer sides or just fold and staple.</li>
             </ol>
           )}
-          <p className="hint">
-            If any page comes out upside down, adjust the map in{" "}
-            <code>src/imposition.js</code> and try again.
-          </p>
         </section>
       </main>
 

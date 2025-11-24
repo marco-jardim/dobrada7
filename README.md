@@ -1,68 +1,94 @@
 # DobradA7
 
-Ferramenta em React/Vite que pega um PDF de 16 páginas e gera um novo PDF com **imposição para
-livreto A7** (16 páginas numa única folha A4 frente e verso, para dobrar, cortar e virar um
-mini‑livro).
+**DobradA7** is a web tool (React/Vite) that performs **imposition** of PDF pages so you can print booklets on **A4 paper** and fold them into **A7** (mini-booklet) or **A6** format.
 
-Tudo roda 100% no navegador, usando [`pdf-lib`](https://pdf-lib.js.org/).
+Everything happens **locally in your browser** (using `pdf-lib`). No files are uploaded to any server.
 
-## Como usar localmente
+## Features
+
+- **A7 Imposition**: Turns 16 logical pages into 1 A4 sheet (front/back).
+- **A6 Imposition**: Turns 8 logical pages into 1 A4 sheet (front/back).
+- **Page Selection**: Choose specific pages or ranges (e.g., "1-8, 10-12").
+- **100% Client-side**: Privacy first, no server processing.
+- **Responsive Design**: Works on desktop and mobile.
+- **Accessibility**: Screen reader friendly with semantic HTML and ARIA attributes.
+
+## How to use
+
+1.  Open the application.
+2.  Select a PDF file.
+3.  Choose the format (**A7** or **A6**).
+4.  (Optional) Select specific pages to include.
+5.  Click **Generate Booklet**.
+6.  Print the generated PDF on **A4 paper**, **Landscape**, **Double-sided (Duplex)**.
+    - **Important**: Disable "Fit to Page" or "Scale to Fit" options. Print at 100% scale.
+
+### Folding Instructions (A7)
+
+1.  Fold the A4 sheet in half vertically (A4 → A5).
+2.  Fold in half horizontally (A5 → A6).
+3.  Fold in half vertically (A6 → A7).
+4.  Cut the three outer edges (top, bottom, right) to release the pages, keeping the spine intact.
+
+### Folding Instructions (A6)
+
+1.  Fold the A4 sheet in half vertically (A4 → A5).
+2.  Fold in half horizontally (A5 → A6).
+3.  Cut the outer edges or staple the spine.
+
+### Troubleshooting
+
+If any page appears inverted or out of order, you can adjust the imposition map in `src/imposition.js` (`IMPOSITION_ORDER` and `ROTATIONS_DEG`) and verify again.
+
+## Development
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm
+
+### Setup
 
 ```bash
+git clone https://github.com/marco-jardim/dobrada7.git
+cd dobrada7
 npm install
+```
+
+### Run Locally
+
+```bash
 npm run dev
 ```
 
-Abra `http://localhost:5173` (ou a porta que o Vite indicar), selecione seu PDF de 16 páginas e
-clique em “Gerar livreto A7 (PDF)”.
+### Run Tests
 
-## Fluxo de impressão
+This project uses **Vitest** and **React Testing Library** for unit and component testing.
 
-1. Gere o PDF do livreto.
-2. Imprima em A4 **paisagem**, frente e verso (duplex).
-3. Desative opções de “ajustar à página” / “fit to page”.
-4. Dobre:
-   - A4 → A5 (dobra vertical)
-   - A5 → A6 (dobra horizontal)
-   - A6 → A7 (dobra vertical)
-5. Corte com guilhotina os três lados externos, deixando apenas o lado da lombada.
+```bash
+npm test
+```
 
-Se alguma página ficar invertida ou fora de ordem, ajuste o mapa de imposição em
-`src/imposition.js` (`IMPOSITION_ORDER` e `ROTATIONS_DEG`) e refaça uma prova.
-
-## Deploy automático no GitHub Pages
-
-O repositório já vem com um workflow em `.github/workflows/deploy.yml`.
-
-Passos:
-
-1. Faça o push do código para um repositório no GitHub (ex.: `seu-usuario/dobrada7`).
-2. Em **Settings → Pages**, escolha **Source: GitHub Actions**.
-3. Faça push na branch `main` (ou ajuste o workflow se usar outra branch).
-
-O workflow vai:
-
-- instalar dependências;
-- buildar o Vite (`npm run build`);
-- publicar o conteúdo da pasta `dist` no GitHub Pages.
-
-## Estrutura do projeto
+## Project Structure
 
 ```text
 dobrada7/
   ├─ src/
-  │  ├─ App.jsx          # UI e lógica principal
-  │  ├─ imposition.js    # mapa de imposição A4 → A7
-  │  ├─ main.jsx         # entrada React/Vite
-  │  └─ styles.css       # estilos básicos responsivos
+  │  ├─ App.jsx            # UI and main logic
+  │  ├─ App.test.jsx       # Unit tests for App component
+  │  ├─ imposition.js      # Imposition logic for A7 and A6
+  │  ├─ imposition.test.js # Unit tests for imposition logic
+  │  ├─ main.jsx           # React/Vite entry point
+  │  ├─ setupTests.js      # Test environment setup
+  │  └─ styles.css         # Basic responsive styles
   ├─ index.html
   ├─ vite.config.js
   ├─ package.json
   └─ .github/workflows/deploy.yml
 ```
 
-## Licença
+## License
 
-Este projeto é licenciado sob a **GNU General Public License v3 (GPLv3)**.
+This project is licensed under the **GNU General Public License v3 (GPLv3)**.
 
-Veja o arquivo [`LICENSE`](./LICENSE) para os termos.
+See the [`LICENSE`](./LICENSE) file for terms.

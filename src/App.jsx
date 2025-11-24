@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PDFDocument, PageSizes, degrees } from "pdf-lib";
-import { getA4A7Imposition, GRID_COLS, GRID_ROWS } from "./imposition";
+import { getImposition } from "./imposition";
 
 function App() {
   const [fileName, setFileName] = useState("");
@@ -10,12 +10,16 @@ function App() {
   const [error, setError] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Config options
+  const [format, setFormat] = useState("a7"); // 'a7' | 'a6'
+  const [pageSelection, setPageSelection] = useState("");
+
   const handleFileChange = async (event) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
 
     setError("");
-    setStatus("Carregando PDF...");
+    setStatus("Loading PDF...");
 
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -27,59 +31,106 @@ function App() {
       setPageCount(count);
 
       if (count === 0) {
-        setError("O PDF parece estar vazio.");
+        setError("The PDF seems to be empty.");
         setStatus("");
       } else {
         setStatus(
-          `PDF carregado com ${count} páginas. Pronto para gerar o livreto.`
+          `PDF loaded with ${count} pages. Configure and generate the booklet.`
         );
       }
     } catch (err) {
       console.error(err);
-      setError(
-        "Não foi possível ler o PDF. Verifique o arquivo e tente novamente."
-      );
+      setError("Could not read the PDF. Please check the file and try again.");
       setFileBytes(null);
       setPageCount(null);
       setStatus("");
     }
   };
 
+  const parsePageSelection = (selection, totalPages) => {
+    if (!selection || !selection.trim()) return null;
+
+    const pages = [];
+    const parts = selection.split(",");
+
+    for (const part of parts) {
+      const range = part.trim().split("-");
+      if (range.length === 1) {
+        const p = parseInt(range[0], 10);
+        if (!isNaN(p) && p >= 1 && p <= totalPages) {
+          pages.push(p - 1);
+        }
+      } else if (range.length === 2) {
+        const start = parseInt(range[0], 10);
+        const end = parseInt(range[1], 10);
+        if (!isNaN(start) && !isNaN(end)) {
+          const step = start <= end ? 1 : -1;
+          let current = start;
+          // Loop handling both ascending and descending ranges
+          while (start <= end ? current <= end : current >= end) {
+            if (current >= 1 && current <= totalPages) {
+              pages.push(current - 1);
+            }
+            current += step;
+          }
+        }
+      }
+    }
+    return pages.length > 0 ? pages : null;
+  };
+
   const handleGenerate = async () => {
     if (!fileBytes) {
-      setError("Selecione primeiro um PDF.");
+      setError("Please select a PDF first.");
       return;
     }
 
     setError("");
-    setStatus("Gerando livreto (tudo acontece no seu navegador)...");
+    setStatus("Generating booklet (everything happens in your browser)...");
     setIsGenerating(true);
 
     try {
       const srcDoc = await PDFDocument.load(fileBytes);
       const pdfDoc = await PDFDocument.create();
 
-      const [a4W, a4H] = PageSizes.A4; // [largura retrato, altura retrato]
-      const sheetWidth = a4H; // Paisagem: inverte
+      // Determine pages to use
+      const selectedIndices = parsePageSelection(pageSelection, pageCount);
+      const effectivePageCount = selectedIndices
+        ? selectedIndices.length
+        : pageCount;
+
+      if (effectivePageCount === 0) {
+        throw new Error("No valid pages selected.");
+      }
+
+      const [a4W, a4H] = PageSizes.A4; // [width portrait, height portrait]
+      const sheetWidth = a4H; // Landscape: invert
       const sheetHeight = a4W;
 
-      const sheets = getA4A7Imposition(pageCount);
+      // Get imposition data
+      const { sheets, grid } = getImposition(format, effectivePageCount);
 
       const srcPages = srcDoc.getPages();
       const embeddedPages = await pdfDoc.embedPages(srcPages);
 
-      const panelWidth = sheetWidth / GRID_COLS; // 4 colunas
-      const panelHeight = sheetHeight / GRID_ROWS; // 2 linhas
+      const panelWidth = sheetWidth / grid.cols;
+      const panelHeight = sheetHeight / grid.rows;
 
       const drawSide = (page, slots) => {
         slots.forEach((slot) => {
-          const embedded = embeddedPages[slot.srcIndex];
-          // Se a página não existe (ex: padding em bloco incompleto), pula
+          // Map logical booklet page index to original PDF page index
+          const logicalIndex = slot.srcIndex;
+          const originalIndex = selectedIndices
+            ? selectedIndices[logicalIndex]
+            : logicalIndex;
+
+          const embedded = embeddedPages[originalIndex];
+          // If page doesn't exist (e.g. padding in incomplete block), skip
           if (!embedded) return;
 
           const { width: pw, height: ph } = embedded;
 
-          // Escala para caber no painel sem distorcer (mantém proporção)
+          // Scale to fit panel without distortion (maintain aspect ratio)
           const scale = Math.min(panelWidth / pw, panelHeight / ph);
           const drawWidth = pw * scale;
           const drawHeight = ph * scale;
@@ -102,12 +153,12 @@ function App() {
         });
       };
 
-      // Itera sobre as folhas geradas pela imposição
+      // Iterate over sheets generated by imposition
       for (const sheet of sheets) {
         const front = pdfDoc.addPage([sheetWidth, sheetHeight]);
         drawSide(front, sheet.frontSlots);
 
-        // Se houver slots de verso, cria a página de verso
+        // If there are back slots, create back page
         if (sheet.backSlots && sheet.backSlots.length > 0) {
           const back = pdfDoc.addPage([sheetWidth, sheetHeight]);
           drawSide(back, sheet.backSlots);
@@ -120,18 +171,19 @@ function App() {
 
       const link = document.createElement("a");
       link.href = url;
-      const baseName = fileName ? fileName.replace(/\.pdf$/i, "") : "livreto";
-      link.download = `${baseName}-dobrada7.pdf`;
+      const baseName = fileName ? fileName.replace(/\.pdf$/i, "") : "booklet";
+      link.download = `${baseName}-dobrada7-${format}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
 
-      setStatus("Livreto gerado! O download do PDF deve ter começado.");
+      setStatus("Booklet generated! The PDF download should have started.");
     } catch (err) {
       console.error(err);
       setError(
-        "Algo deu errado ao gerar o livreto. Veja o console para detalhes."
+        err.message ||
+          "Something went wrong while generating the booklet. Check the console for details."
       );
       setStatus("");
     } finally {
@@ -144,28 +196,85 @@ function App() {
       <header className="header">
         <h1>DobradA7</h1>
         <p className="subtitle">
-          Transforme seu PDF em um livreto A7 a partir de folhas A4, 100% no
-          navegador. Suporta qualquer quantidade de páginas.
+          Transform your PDF into an A7 or A6 booklet from A4 sheets, 100% in
+          your browser.
         </p>
       </header>
 
-      <main className="card">
-        <section className="field">
-          <label htmlFor="pdf-input" className="label">
-            1. Selecione o PDF
+      <main className="card" role="main">
+        <section className="field" aria-labelledby="file-label">
+          <label id="file-label" htmlFor="pdf-input" className="label">
+            1. Select PDF
           </label>
           <input
             id="pdf-input"
+            data-testid="pdf-input"
             type="file"
             accept="application/pdf"
             onChange={handleFileChange}
+            aria-describedby="file-hint"
           />
           {fileName && (
-            <p className="hint">
-              Arquivo: <strong>{fileName}</strong>{" "}
-              {pageCount != null && `(páginas: ${pageCount})`}
+            <p id="file-hint" className="hint">
+              File: <strong>{fileName}</strong>{" "}
+              {pageCount != null && `(pages: ${pageCount})`}
             </p>
           )}
+        </section>
+
+        <section className="field" aria-labelledby="config-label">
+          <label id="config-label" className="label">
+            2. Settings
+          </label>
+          <div className="control-group">
+            <span className="control-label" id="format-label">
+              Format:
+            </span>
+            <div
+              className="radio-group"
+              role="radiogroup"
+              aria-labelledby="format-label"
+            >
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="format"
+                  value="a7"
+                  checked={format === "a7"}
+                  onChange={(e) => setFormat(e.target.value)}
+                />
+                A7 (16 pgs/sheet)
+              </label>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="format"
+                  value="a6"
+                  checked={format === "a6"}
+                  onChange={(e) => setFormat(e.target.value)}
+                />
+                A6 (8 pgs/sheet)
+              </label>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label htmlFor="page-selection" className="control-label">
+              Pages (optional):
+            </label>
+            <input
+              id="page-selection"
+              type="text"
+              placeholder="Ex: 1-8, 10, 12-14"
+              value={pageSelection}
+              onChange={(e) => setPageSelection(e.target.value)}
+              className="text-input"
+              aria-describedby="page-hint"
+            />
+            <p id="page-hint" className="hint">
+              Leave blank to use all. Accepts ranges (1-5) and lists (1,3,5).
+            </p>
+          </div>
         </section>
 
         <section className="field">
@@ -173,39 +282,66 @@ function App() {
             className="primary-button"
             onClick={handleGenerate}
             disabled={!fileBytes || isGenerating}
+            aria-busy={isGenerating}
           >
-            {isGenerating ? "Gerando..." : "2. Gerar livreto A7 (PDF)"}
+            {isGenerating ? "Generating..." : "3. Generate Booklet (PDF)"}
           </button>
           <p className="hint">
-            Imprima em A4 <strong>paisagem</strong>, frente e verso (duplex),
-            sem “ajustar à página” para manter as proporções.
+            Print on A4 <strong>landscape</strong>, double-sided (duplex),
+            without "fit to page".
           </p>
         </section>
 
-        {status && <p className="status">{status}</p>}
-        {error && <p className="error">{error}</p>}
+        {status && (
+          <p className="status" role="status">
+            {status}
+          </p>
+        )}
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
 
-        <section className="info">
-          <h2>Como dobrar / encadernar</h2>
-          <ol>
-            <li>Imprima o PDF em A4 paisagem, frente e verso.</li>
-            <li>Primeira dobra ao meio no sentido vertical (A4 → A5).</li>
-            <li>Segunda dobra ao meio no sentido horizontal (A5 → A6).</li>
-            <li>Terceira dobra ao meio no sentido vertical (A6 → A7).</li>
-            <li>
-              Corte com guilhotina os três lados externos, deixando apenas o
-              lado que une todas as páginas (lombada).
-            </li>
-          </ol>
+        <section className="info" aria-labelledby="instructions-label">
+          <h2 id="instructions-label">How to fold / bind</h2>
+          {format === "a7" ? (
+            <ol>
+              <li>Print the PDF on A4 landscape, double-sided.</li>
+              <li>First fold in half vertically (A4 → A5).</li>
+              <li>Second fold in half horizontally (A5 → A6).</li>
+              <li>Third fold in half vertically (A6 → A7).</li>
+              <li>
+                Cut the three outer sides with a guillotine, leaving only the
+                side that joins all pages (spine).
+              </li>
+            </ol>
+          ) : (
+            <ol>
+              <li>Print the PDF on A4 landscape, double-sided.</li>
+              <li>First fold in half vertically (A4 → A5).</li>
+              <li>Second fold in half horizontally (A5 → A6).</li>
+              <li>Cut the outer sides or just fold and staple.</li>
+            </ol>
+          )}
           <p className="hint">
-            Se alguma página sair de cabeça para baixo, ajuste o mapa em{" "}
-            <code>src/imposition.js</code> e refaça uma prova.
+            If any page comes out upside down, adjust the map in{" "}
+            <code>src/imposition.js</code> and try again.
           </p>
         </section>
       </main>
 
       <footer className="footer">
-        <span>GPLv3 • tudo no navegador • projeto: DobradA7</span>
+        <span>
+          GPLv3 • 100% in browser • project:{" "}
+          <a
+            href="https://github.com/marco-jardim/dobrada7"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            DobradA7
+          </a>
+        </span>
       </footer>
     </div>
   );

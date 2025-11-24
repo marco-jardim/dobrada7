@@ -1,0 +1,147 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color-scheme: light dark;
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.app {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  max-width: 40rem;
+  color: #9ca3af;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.96);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+}
+
+input[type='file'] {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px dashed #4b5563;
+  background: rgba(15, 23, 42, 0.6);
+  color: inherit;
+}
+
+input[type='file']::file-selector-button {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  margin-right: 0.75rem;
+  background: #22c55e;
+  color: #022c22;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+input[type='file']::file-selector-button:hover {
+  filter: brightness(1.05);
+}
+
+.primary-button {
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22c55e, #14b8a6);
+  color: #022c22;
+  align-self: flex-start;
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.hint {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.status {
+  font-size: 0.95rem;
+  color: #22c55e;
+}
+
+.error {
+  font-size: 0.95rem;
+  color: #f97373;
+}
+
+.info h2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+
+.info ol {
+  margin: 0.5rem 0 0.5rem 1.25rem;
+  padding: 0;
+}
+
+.info li {
+  margin-bottom: 0.25rem;
+}
+
+.info code {
+  background: rgba(31, 41, 55, 0.9);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.footer {
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .card {
+    padding: 1.25rem;
+  }
+}

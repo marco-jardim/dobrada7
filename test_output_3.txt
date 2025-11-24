@@ -1,0 +1,273 @@
+
+> dobrada7@0.1.0 test
+> vitest "src/App.test.jsx" "--run" "-t" "handles file upload and generation flow"
+
+
+[1m[46m RUN [49m[22m [36mv4.0.13 [39m[90mD:/git/dobrada7[39m
+
+stderr | src/App.test.jsx > App Component > handles file upload and generation flow
+ReferenceError: panelWidth is not defined
+    at D:/git/dobrada7/src/App.jsx:80:34
+    at Array.forEach (<anonymous>)
+    at drawSide (D:/git/dobrada7/src/App.jsx:72:15)
+    at handleGenerate (D:/git/dobrada7/src/App.jsx:100:9)
+
+ [31m❯[39m src/App.test.jsx [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m2 skipped[39m[2m)[22m[33m 1066[2mms[22m[39m
+     [2m[90m↓[39m[22m renders title and instructions
+[31m     [31m×[31m handles file upload and generation flow[39m[33m 1065[2mms[22m[39m
+     [2m[90m↓[39m[22m shows error for empty PDF
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.jsx > App Component > handles file upload and generation flow
+TestingLibraryElementError: Unable to find an element with the text: /Livreto gerado/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="app"
+    >
+      <header
+        class="header"
+      >
+        <h1>
+          DobradA7
+        </h1>
+        <p
+          class="subtitle"
+        >
+          Transforme seu PDF em um livreto A7 a partir de folhas A4, 100% no navegador. Suporta qualquer quantidade de páginas.
+        </p>
+      </header>
+      <main
+        class="card"
+      >
+        <section
+          class="field"
+        >
+          <label
+            class="label"
+            for="pdf-input"
+          >
+            1. Selecione o PDF
+          </label>
+          <input
+            accept="application/pdf"
+            id="pdf-input"
+            type="file"
+          />
+          <p
+            class="hint"
+          >
+            Arquivo: 
+            <strong>
+              test.pdf
+            </strong>
+             
+            (páginas: 16)
+          </p>
+        </section>
+        <section
+          class="field"
+        >
+          <button
+            class="primary-button"
+          >
+            2. Gerar livreto A7 (PDF)
+          </button>
+          <p
+            class="hint"
+          >
+            Imprima em A4 
+            <strong>
+              paisagem
+            </strong>
+            , frente e verso (duplex), sem “ajustar à página” para manter as proporções.
+          </p>
+        </section>
+        <p
+          class="error"
+        >
+          Algo deu errado ao gerar o livreto. Veja o console para detalhes.
+        </p>
+        <section
+          class="info"
+        >
+          <h2>
+            Como dobrar / encadernar
+          </h2>
+          <ol>
+            <li>
+              Imprima o PDF em A4 paisagem, frente e verso.
+            </li>
+            <li>
+              Primeira dobra ao meio no sentido vertical (A4 → A5).
+            </li>
+            <li>
+              Segunda dobra ao meio no sentido horizontal (A5 → A6).
+            </li>
+            <li>
+              Terceira dobra ao meio no sentido vertical (A6 → A7).
+            </li>
+            <li>
+              Corte com guilhotina os três lados externos, deixando apenas o lado que une todas as páginas (lombada).
+            </li>
+          </ol>
+          <p
+            class="hint"
+          >
+            Se alguma página sair de cabeça para baixo, ajuste o mapa em
+             
+            <code>
+              src/imposition.js
+            </code>
+             e refaça uma prova.
+          </p>
+        </section>
+      </main>
+      <footer
+        class="footer"
+      >
+        <span>
+          GPLv3 • tudo no navegador • projeto: DobradA7
+        </span>
+      </footer>
+    </div>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<html>
+  <head />
+  <body>
+    <div>
+      <div
+        class="app"
+      >
+        <header
+          class="header"
+        >
+          <h1>
+            DobradA7
+          </h1>
+          <p
+            class="subtitle"
+          >
+            Transforme seu PDF em um livreto A7 a partir de folhas A4, 100% no navegador. Suporta qualquer quantidade de páginas.
+          </p>
+        </header>
+        <main
+          class="card"
+        >
+          <section
+            class="field"
+          >
+            <label
+              class="label"
+              for="pdf-input"
+            >
+              1. Selecione o PDF
+            </label>
+            <input
+              accept="application/pdf"
+              id="pdf-input"
+              type="file"
+            />
+            <p
+              class="hint"
+            >
+              Arquivo: 
+              <strong>
+                test.pdf
+              </strong>
+               
+              (páginas: 16)
+            </p>
+          </section>
+          <section
+            class="field"
+          >
+            <button
+              class="primary-button"
+            >
+              2. Gerar livreto A7 (PDF)
+            </button>
+            <p
+              class="hint"
+            >
+              Imprima em A4 
+              <strong>
+                paisagem
+              </strong>
+              , frente e verso (duplex), sem “ajustar à página” para manter as proporções.
+            </p>
+          </section>
+          <p
+            class="error"
+          >
+            Algo deu errado ao gerar o livreto. Veja o console para detalhes.
+          </p>
+          <section
+            class="info"
+          >
+            <h2>
+              Como dobrar / encadernar
+            </h2>
+            <ol>
+              <li>
+                Imprima o PDF em A4 paisagem, frente e verso.
+              </li>
+              <li>
+                Primeira dobra ao meio no sentido vertical (A4 → A5).
+              </li>
+              <li>
+                Segunda dobra ao meio no sentido horizontal (A5 → A6).
+              </li>
+              <li>
+                Terceira dobra ao meio no sentido vertical (A6 → A7).
+              </li>
+              <li>
+                Corte com guilhotina os três lados externos, deixando apenas o lado que une todas as páginas (lombada).
+              </li>
+            </ol>
+            <p
+              class="hint"
+            >
+              Se alguma página sair de cabeça para baixo, ajuste o mapa em
+               
+              <code>
+                src/imposition.js
+              </code>
+               e refaça uma prova.
+            </p>
+          </section>
+        </main>
+        <footer
+          class="footer"
+        >
+          <span>
+            GPLv3 • tudo no navegador • projeto: DobradA7
+          </span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
+ ❯ Proxy.waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ src/App.test.jsx:85:11
+     83| 
+     84|     // Wait for generation
+     85|     await waitFor(() => {
+       |           ^
+     86|       expect(screen.getByText(/Livreto gerado/i)).toBeInTheDocument();
+     87|     });
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m
+[2m   Start at [22m 10:20:47
+[2m   Duration [22m 2.85s[2m (transform 65ms, setup 167ms, collect 468ms, tests 1.07s, environment 914ms, prepare 24ms)[22m
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -104,8 +104,16 @@ function App() {
       }
 
       const [a4W, a4H] = PageSizes.A4; // [width portrait, height portrait]
-      const sheetWidth = a4H; // Landscape: invert
-      const sheetHeight = a4W;
+
+      let sheetWidth, sheetHeight;
+
+      if (format === "a6") {
+        sheetWidth = a4W;
+        sheetHeight = a4H;
+      } else {
+        sheetWidth = a4H; // Landscape: invert
+        sheetHeight = a4W;
+      }
 
       // Get imposition data
       const { sheets, grid } = getImposition(format, effectivePageCount);
@@ -287,8 +295,9 @@ function App() {
             {isGenerating ? "Generating..." : "3. Generate Booklet (PDF)"}
           </button>
           <p className="hint">
-            Print on A4 <strong>landscape</strong>, double-sided (duplex),
-            without "fit to page".
+            Print on A4{" "}
+            <strong>{format === "a6" ? "portrait" : "landscape"}</strong>,
+            double-sided (duplex), without "fit to page".
           </p>
         </section>
 
@@ -318,9 +327,9 @@ function App() {
             </ol>
           ) : (
             <ol>
-              <li>Print the PDF on A4 landscape, double-sided.</li>
-              <li>First fold in half vertically (A4 → A5).</li>
-              <li>Second fold in half horizontally (A5 → A6).</li>
+              <li>Print the PDF on A4 portrait, double-sided.</li>
+              <li>First fold in half horizontally (A4 → A5).</li>
+              <li>Second fold in half vertically (A5 → A6).</li>
               <li>Cut the outer sides or just fold and staple.</li>
             </ol>
           )}

@@ -20,7 +20,9 @@ Everything happens **locally in your browser** (using `pdf-lib`). No files are u
 3.  Choose the format (**A7** or **A6**).
 4.  (Optional) Select specific pages to include.
 5.  Click **Generate Booklet**.
-6.  Print the generated PDF on **A4 paper**, **Landscape**, **Double-sided (Duplex)**.
+6.  Print the generated PDF on **A4 paper**.
+    - For **A7**: Print **Landscape**, **Double-sided (Duplex)**.
+    - For **A6**: Print **Portrait**, **Double-sided (Duplex)**.
     - **Important**: Disable "Fit to Page" or "Scale to Fit" options. Print at 100% scale.
 
 ### Folding Instructions (A7)
@@ -32,9 +34,10 @@ Everything happens **locally in your browser** (using `pdf-lib`). No files are u
 
 ### Folding Instructions (A6)
 
-1.  Fold the A4 sheet in half vertically (A4 → A5).
-2.  Fold in half horizontally (A5 → A6).
-3.  Cut the outer edges or staple the spine.
+1.  Print on A4 **Portrait**.
+2.  Fold the A4 sheet in half horizontally (A4 → A5).
+3.  Fold in half vertically (A5 → A6).
+4.  Cut the outer edges or staple the spine.
 
 ### Troubleshooting
 

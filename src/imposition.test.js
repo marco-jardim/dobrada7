@@ -61,22 +61,23 @@ describe("getImposition (A6)", () => {
     const slots = sheets[0].frontSlots;
     const findSlot = (idx) => slots.find((s) => s.srcIndex === idx);
 
-    // Pg 1 (srcIndex 0) -> Slot 1 (TR)
+    // With correct imposition [1, 2, 4, 3] at [TL, TR, BL, BR]:
+    // Pg 1 (srcIndex 0) -> TL: col=0, row=1
     const s1 = findSlot(0);
     expect(s1).toBeDefined();
-    expect(s1.col).toBe(1);
+    expect(s1.col).toBe(0);
     expect(s1.row).toBe(1); // Top Row
 
-    // Pg 2 (srcIndex 1) -> Slot 3 (BR)
+    // Pg 2 (srcIndex 1) -> TR: col=1, row=1
     const s2 = findSlot(1);
     expect(s2).toBeDefined();
     expect(s2.col).toBe(1);
-    expect(s2.row).toBe(0); // Bottom Row
+    expect(s2.row).toBe(1); // Top Row
 
-    // Pg 3 (srcIndex 2) -> Slot 2 (BL)
+    // Pg 3 (srcIndex 2) -> BR: col=1, row=0
     const s3 = findSlot(2);
     expect(s3).toBeDefined();
-    expect(s3.col).toBe(0);
+    expect(s3.col).toBe(1);
     expect(s3.row).toBe(0); // Bottom Row
   });
 
@@ -89,8 +90,8 @@ describe("getImposition (A6)", () => {
     expect(sheets[0].backSlots).toHaveLength(4);
 
     // Sheet 2: Remaining 4 pages (9..12)
-    // Uses 8-page layout logic (partial block)
-    expect(sheets[1].frontSlots).toHaveLength(2);
-    expect(sheets[1].backSlots).toHaveLength(2);
+    // With imposition [1,2,4,3,7,8,5,6], pages 9-12 fill front only
+    expect(sheets[1].frontSlots).toHaveLength(4);
+    expect(sheets[1].backSlots).toHaveLength(0);
   });
 });

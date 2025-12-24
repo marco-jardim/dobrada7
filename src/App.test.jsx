@@ -15,6 +15,7 @@ vi.mock("pdf-lib", () => {
       A4: [595.28, 841.89],
     },
     degrees: vi.fn(),
+    rgb: vi.fn(() => ({ r: 0, g: 0, b: 0 })),
   };
 });
 
@@ -46,7 +47,7 @@ describe("App Component", () => {
     pdfLib.PDFDocument.load.mockResolvedValue(mockSrcDoc);
 
     // Mock PDFDocument.create
-    const mockPage = { drawPage: vi.fn() };
+    const mockPage = { drawPage: vi.fn(), drawLine: vi.fn() };
     const mockPdfDoc = {
       addPage: vi.fn().mockReturnValue(mockPage),
       embedPages: vi

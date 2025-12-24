@@ -15,6 +15,7 @@ vi.mock("pdf-lib", () => {
       A4: [595.28, 841.89], // [width, height] in points (Portrait)
     },
     degrees: vi.fn(),
+    rgb: vi.fn(() => ({ r: 0, g: 0, b: 0 })),
   };
 });
 
@@ -27,7 +28,7 @@ describe("App Orientation", () => {
     vi.clearAllMocks();
   });
 
-  it("uses A4 Landscape for A7 format", async () => {
+  it("uses A4 Landscape for A7 portrait pages", async () => {
     const user = userEvent.setup();
 
     // Mock PDF load
@@ -38,7 +39,7 @@ describe("App Orientation", () => {
     pdfLib.PDFDocument.load.mockResolvedValue(mockSrcDoc);
 
     // Mock PDF create
-    const mockPage = { drawPage: vi.fn() };
+    const mockPage = { drawPage: vi.fn(), drawLine: vi.fn() };
     const mockPdfDoc = {
       addPage: vi.fn().mockReturnValue(mockPage),
       embedPages: vi
@@ -60,6 +61,10 @@ describe("App Orientation", () => {
     const a7Radio = screen.getByLabelText(/A7/i);
     await user.click(a7Radio);
 
+    // Portrait pages (default) => output A4 landscape
+    const portraitRadio = screen.getByLabelText(/Portrait/i);
+    await user.click(portraitRadio);
+
     // Generate
     const button = screen.getByText(/Generate Booklet/i);
     await user.click(button);
@@ -68,7 +73,6 @@ describe("App Orientation", () => {
       expect(screen.getByText(/Booklet generated/i)).toBeInTheDocument();
     });
 
-    // Verify addPage called with Landscape dimensions (Height, Width)
     // A4 Portrait: [595.28, 841.89]
     // A4 Landscape: [841.89, 595.28]
     expect(mockPdfDoc.addPage).toHaveBeenCalledWith([841.89, 595.28]);
@@ -85,7 +89,7 @@ describe("App Orientation", () => {
     pdfLib.PDFDocument.load.mockResolvedValue(mockSrcDoc);
 
     // Mock PDF create
-    const mockPage = { drawPage: vi.fn() };
+    const mockPage = { drawPage: vi.fn(), drawLine: vi.fn() };
     const mockPdfDoc = {
       addPage: vi.fn().mockReturnValue(mockPage),
       embedPages: vi
@@ -106,6 +110,10 @@ describe("App Orientation", () => {
     // Select A6
     const a6Radio = screen.getByLabelText(/A6/i);
     await user.click(a6Radio);
+
+    // Select Portrait orientation
+    const portraitRadio = screen.getByLabelText(/Portrait/i);
+    await user.click(portraitRadio);
 
     // Generate
     const button = screen.getByText(/Generate Booklet/i);

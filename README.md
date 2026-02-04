@@ -1,8 +1,21 @@
 # DobradA7
 
+[![Deploy](https://github.com/marco-jardim/dobrada7/actions/workflows/deploy.yml/badge.svg)](https://github.com/marco-jardim/dobrada7/actions/workflows/deploy.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 **DobradA7** is a web tool (React/Vite) that performs **imposition** of PDF pages so you can print booklets on **A4 paper** and fold them into **A7** (mini-booklet) or **A6** format.
 
 Everything happens **locally in your browser** (using `pdf-lib`). No files are uploaded to any server.
+
+## Live Demo
+
+**[https://marco-jardim.github.io/dobrada7/](https://marco-jardim.github.io/dobrada7/)**
+
+## Screenshot
+
+![DobradA7 Interface](https://github.com/user-attachments/assets/dobrada7-screenshot.png)
+
+*Upload a PDF, select your format (A7 or A6), and generate a print-ready booklet in seconds.*
 
 ## Features
 
@@ -15,7 +28,7 @@ Everything happens **locally in your browser** (using `pdf-lib`). No files are u
 
 ## How to use
 
-1.  Open the application.
+1.  Open the application at **[https://marco-jardim.github.io/dobrada7/](https://marco-jardim.github.io/dobrada7/)**
 2.  Select a PDF file.
 3.  Choose the format (**A7** or **A6**).
 4.  (Optional) Select specific pages to include.
@@ -26,6 +39,33 @@ Everything happens **locally in your browser** (using `pdf-lib`). No files are u
     - **Important**: Disable "Fit to Page" or "Scale to Fit" options. Print at 100% scale.
 
 ### Folding Instructions (A7)
+
+```
+   ┌─────────────────────────────┐
+   │                             │
+   │         A4 Sheet            │
+   │                             │
+   │                             │
+   └─────────────────────────────┘
+              ↓ Fold 1 (vertical)
+   ┌──────────┬──────────┐
+   │          │          │
+   │    A5    │    A5    │
+   │          │          │
+   └──────────┴──────────┘
+              ↓ Fold 2 (horizontal)
+   ┌──────────┐
+   │    A6    │
+   ├──────────┤
+   │    A6    │
+   └──────────┘
+              ↓ Fold 3 (vertical)
+   ┌─────┬─────┐
+   │ A7  │ A7  │
+   └─────┴─────┘
+              ↓ Cut outer edges
+         📖 Booklet ready!
+```
 
 1.  Fold the A4 sheet in half vertically (A4 → A5).
 2.  Fold in half horizontally (A5 → A6).
@@ -64,12 +104,20 @@ npm install
 npm run dev
 ```
 
+Open [http://localhost:30009](http://localhost:30009) in your browser.
+
 ### Run Tests
 
 This project uses **Vitest** and **React Testing Library** for unit and component testing.
 
 ```bash
 npm test
+```
+
+### Build for Production
+
+```bash
+npm run build
 ```
 
 ## Project Structure
@@ -89,6 +137,16 @@ dobrada7/
   ├─ package.json
   └─ .github/workflows/deploy.yml
 ```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
